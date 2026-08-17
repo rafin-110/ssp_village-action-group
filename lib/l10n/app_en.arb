@@ -1,0 +1,84 @@
+{
+  "@@locale": "en",
+  "appTitle": "VAG-DMP",
+  "@appTitle": { "description": "The application title" },
+
+  "login": "Login",
+  "phoneOrEmail": "Phone Number or Email",
+  "password": "Password",
+  "forgotPassword": "Forgot Password?",
+  "loginButton": "Login",
+  "loginWelcome": "Welcome to VAG-DMP",
+  "loginSubtitle": "Empowering Villages, Tracking Progress",
+
+  "navDashboard": "Dashboard",
+  "navVillages": "Villages",
+  "navMeetings": "Meetings",
+  "navProfile": "Profile",
+
+  "dashboardWelcome": "Namaste, {userName} 🙏",
+  "@dashboardWelcome": {
+    "placeholders": {
+      "userName": { "type": "String" }
+    }
+  },
+  "upcomingMeetings": "Upcoming Meetings",
+  "openIssues": "Open Issues",
+  "villagesAssigned": "Villages Assigned",
+  "logNewIssue": "Log New Issue",
+  "startMeeting": "Start Meeting",
+  "recentActivity": "Recent Activity",
+
+  "totalVillages": "Total Villages",
+  "activeIssues": "Active Issues",
+  "resolvedThisMonth": "Resolved This Month",
+  "meetingsThisWeek": "Meetings This Week",
+
+  "villageList": "Villages",
+  "searchVillages": "Search villages...",
+  "villageMembers": "Members",
+  "villageIssues": "Issues",
+  "villageMeetings": "Meetings",
+  "villageOverview": "Overview",
+
+  "createMeeting": "Create Meeting",
+  "meetingDate": "Meeting Date",
+  "villageName": "Village Name",
+  "attendeesCount": "Number of Attendees",
+  "meetingNotes": "Meeting Notes",
+  "attachPhoto": "Attach Photo",
+  "saveMeeting": "Save Meeting",
+
+  "logIssue": "Log Issue",
+  "issueTitle": "Issue Title",
+  "issueCategory": "Category",
+  "issueSeverity": "Severity",
+  "issueDescription": "Description",
+  "submitIssue": "Submit Issue",
+
+  "categoryWater": "Water",
+  "categorySanitation": "Sanitation",
+  "categoryRoads": "Roads",
+  "categoryEducation": "Education",
+  "categoryHealth": "Health",
+  "categoryOther": "Other",
+
+  "severityLow": "Low",
+  "severityMedium": "Medium",
+  "severityHigh": "High",
+
+  "statusReported": "Reported",
+  "statusEscalated": "Escalated to Govt",
+  "statusInProgress": "In Progress",
+  "statusResolved": "Resolved",
+
+  "memberDirectory": "Member Directory",
+  "addMember": "Add Member",
+
+  "noData": "No data available",
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "viewAll": "View All"
+}

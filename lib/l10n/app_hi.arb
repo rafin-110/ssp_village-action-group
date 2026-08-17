@@ -1,0 +1,78 @@
+{
+  "@@locale": "hi",
+  "appTitle": "वीएजी-डीएमपी",
+
+  "login": "लॉगिन",
+  "phoneOrEmail": "फ़ोन नंबर या ईमेल",
+  "password": "पासवर्ड",
+  "forgotPassword": "पासवर्ड भूल गए?",
+  "loginButton": "लॉगिन करें",
+  "loginWelcome": "वीएजी-डीएमपी में आपका स्वागत है",
+  "loginSubtitle": "गाँवों को सशक्त बनाना, प्रगति को ट्रैक करना",
+
+  "navDashboard": "डैशबोर्ड",
+  "navVillages": "गाँव",
+  "navMeetings": "बैठकें",
+  "navProfile": "प्रोफ़ाइल",
+
+  "dashboardWelcome": "नमस्ते, {userName} 🙏",
+  "upcomingMeetings": "आगामी बैठकें",
+  "openIssues": "खुले मुद्दे",
+  "villagesAssigned": "सौंपे गए गाँव",
+  "logNewIssue": "नया मुद्दा दर्ज करें",
+  "startMeeting": "बैठक शुरू करें",
+  "recentActivity": "हालिया गतिविधि",
+
+  "totalVillages": "कुल गाँव",
+  "activeIssues": "सक्रिय मुद्दे",
+  "resolvedThisMonth": "इस माह हल किए गए",
+  "meetingsThisWeek": "इस सप्ताह की बैठकें",
+
+  "villageList": "गाँव",
+  "searchVillages": "गाँव खोजें...",
+  "villageMembers": "सदस्य",
+  "villageIssues": "मुद्दे",
+  "villageMeetings": "बैठकें",
+  "villageOverview": "अवलोकन",
+
+  "createMeeting": "बैठक बनाएं",
+  "meetingDate": "बैठक की तारीख",
+  "villageName": "गाँव का नाम",
+  "attendeesCount": "उपस्थित सदस्यों की संख्या",
+  "meetingNotes": "बैठक नोट्स",
+  "attachPhoto": "फोटो जोड़ें",
+  "saveMeeting": "बैठक सहेजें",
+
+  "logIssue": "मुद्दा दर्ज करें",
+  "issueTitle": "मुद्दे का शीर्षक",
+  "issueCategory": "श्रेणी",
+  "issueSeverity": "गंभीरता",
+  "issueDescription": "विवरण",
+  "submitIssue": "मुद्दा जमा करें",
+
+  "categoryWater": "पानी",
+  "categorySanitation": "स्वच्छता",
+  "categoryRoads": "सड़कें",
+  "categoryEducation": "शिक्षा",
+  "categoryHealth": "स्वास्थ्य",
+  "categoryOther": "अन्य",
+
+  "severityLow": "कम",
+  "severityMedium": "मध्यम",
+  "severityHigh": "उच्च",
+
+  "statusReported": "रिपोर्ट किया गया",
+  "statusEscalated": "सरकार को भेजा गया",
+  "statusInProgress": "प्रगति में",
+  "statusResolved": "हल किया गया",
+
+  "memberDirectory": "सदस्य निर्देशिका",
+  "addMember": "सदस्य जोड़ें",
+
+  "noData": "कोई डेटा उपलब्ध नहीं",
+  "save": "सहेजें",
+  "cancel": "रद्द करें",
+  "delete": "हटाएं",
+  "edit": "संपादित करें",
+  "viewAll": "सभी देखें"
+}
