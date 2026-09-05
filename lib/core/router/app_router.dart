@@ -16,6 +16,9 @@ import 'leader_routes.dart';
 
 // ── Admin screens ─────────────────────────────────────────────────────────────
 import '../../features/admin/screens/admin_analytics_screen.dart';
+import '../../features/admin/screens/admin_issue_list_screen.dart';
+import '../../features/admin/screens/admin_issue_detail_screen.dart';
+import '../../features/admin/screens/admin_leaders_screen.dart';
 import '../../features/admin/screens/admin_villages_screen.dart';
 import '../../features/admin/screens/verification_center_screen.dart';
 import '../../features/admin/screens/admin_review_screen.dart';
@@ -155,6 +158,26 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/admin/dashboard',
           name: 'admin-dashboard',
           builder: (context, state) => const AdminAnalyticsScreen(),
+        ),
+        GoRoute(
+          path: '/admin/issues',
+          name: 'admin-issues',
+          builder: (context, state) => const AdminIssueListScreen(),
+          routes: [
+            GoRoute(
+              path: ':issueId',
+              name: 'admin-issue-detail',
+              builder: (context, state) {
+                final issueId = state.pathParameters['issueId']!;
+                return AdminIssueDetailScreen(issueId: issueId);
+              },
+            ),
+          ],
+        ),
+        GoRoute(
+          path: '/admin/leaders',
+          name: 'admin-leaders',
+          builder: (context, state) => const AdminLeadersScreen(),
         ),
         GoRoute(
           path: '/admin/verify',
