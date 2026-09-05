@@ -4,23 +4,24 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/forgot_password_screen.dart';
 import '../../features/shell/screens/app_shell.dart';
 
-// ── Leader screens ───────────────────────────────────────────────────────────
-import '../../features/issues/screens/report_issue_screen.dart';
-import '../../features/issues/screens/issue_list_screen.dart';
-import '../../features/issues/screens/issue_detail_screen.dart';
+import 'leader_routes.dart';
 
 
-import '../../features/meetings/screens/meeting_list_screen.dart';
-import '../../features/meetings/screens/create_meeting_screen.dart';
-import '../../features/meetings/screens/meeting_detail_screen.dart';
+
+
+
+
+
+
 
 // ── Admin screens ─────────────────────────────────────────────────────────────
 import '../../features/admin/screens/admin_dashboard_screen.dart';
+import '../../features/admin/screens/admin_villages_screen.dart';
 import '../../features/admin/screens/verification_center_screen.dart';
 import '../../features/admin/screens/admin_review_screen.dart';
 import '../../features/admin/screens/admin_notifications_screen.dart';
-import '../../features/villages/screens/village_list_screen.dart';
-import '../../features/villages/screens/village_detail_screen.dart';
+
+
 
 // ── Shared ────────────────────────────────────────────────────────────────────
 import '../../features/profile/screens/profile_screen.dart';
@@ -157,7 +158,7 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/admin/villages',
           name: 'admin-villages',
-          builder: (context, state) => const VillageListScreen(),
+          builder: (context, state) => state.matchedLocation.startsWith('/admin') ? const AdminVillagesScreen() : const VillageListScreen(),
           routes: [
             GoRoute(
               path: ':villageId',

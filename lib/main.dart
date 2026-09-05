@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'app.dart';
-import 'core/database/local_db.dart';
-import 'core/sync/sync_manager.dart';
-import 'features/issues/data/data_sources/issue_category_local_data_source.dart';
+import 'core/bootstrap/app_bootstrap.dart';
+import 'core/network/supabase_config.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Initialize offline-first database
-  await LocalDb.init();
 
-  // Seed predefined categories & subcategories (idempotent — skips if populated)
-  await IssueCategoryLocalDataSource().seedIfEmpty();
+  // ── 1. Supabase (must be first — auth session restore depends on it) ──────
+  await Supabase.initialize(
+    url: SupabaseConfig.url,
+    // ignore: deprecated_member_use
+    anonKey: SupabaseConfig.anonKey,
+  );
 
-  // Initialize background sync listener
-  SyncManager.initialize();
+  // ── 2. Offline-first database & Data migrations ─────────────────────────────
+  await initLocalDbAndSync();
 
-  // Initialize locale data for formatting
+  // ── 3. Initialize locale data for formatting ──────────────────────────────
   await initializeDateFormatting('en_IN', null);
   await initializeDateFormatting('hi_IN', null);
 

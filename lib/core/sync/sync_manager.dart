@@ -24,6 +24,12 @@ class SyncManager {
     });
   }
 
+  static Future<void> syncNow() async {
+    if (!LocalDb.isAvailable) return;
+    debugPrint('SyncManager: Manual sync triggered. Processing pending queue...');
+    await _processSyncQueue();
+  }
+
   static Future<void> _processSyncQueue() async {
     if (!LocalDb.isAvailable) return;
     debugPrint('SyncManager: Network connected. Processing pending queue...');
