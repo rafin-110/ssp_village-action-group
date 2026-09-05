@@ -15,7 +15,7 @@ import 'leader_routes.dart';
 
 
 // ── Admin screens ─────────────────────────────────────────────────────────────
-import '../../features/admin/screens/admin_dashboard_screen.dart';
+import '../../features/admin/screens/admin_analytics_screen.dart';
 import '../../features/admin/screens/admin_villages_screen.dart';
 import '../../features/admin/screens/verification_center_screen.dart';
 import '../../features/admin/screens/admin_review_screen.dart';
@@ -35,12 +35,33 @@ import '../../features/profile/screens/profile_screen.dart';
 //   /leader/submit  kept as redirect for backward compatibility
 // ---------------------------------------------------------------------------
 
-/// GoRouter configuration for VAG-DMP.
-/// Two ShellRoutes: Leader (mobile) and Admin (dashboard).
-final GoRouter appRouter = GoRouter(
-  initialLocation: '/login',
-  debugLogDiagnostics: true,
-  routes: [
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../auth/auth_providers.dart';
+import '../auth/user_role.dart';
+
+/// GoRouter configuration for VAG-DMP exposed as a provider.
+final routerProvider = Provider<GoRouter>((ref) {
+  return GoRouter(
+    initialLocation: '/login',
+    debugLogDiagnostics: true,
+    redirect: (context, state) {
+      final user = ref.read(currentUserProvider);
+      final isLogin = state.uri.path == '/login';
+      
+      if (user == null) {
+        return isLogin ? null : '/login';
+      }
+      
+      if (isLogin) {
+        if (user.role == UserRole.admin) {
+          return '/admin/dashboard';
+        } else {
+          return '/leader/submit';
+        }
+      }
+      return null;
+    },
+    routes: [
     // ── Authentication ────────────────────────────────────────────────────
     GoRoute(
       path: '/login',
@@ -133,7 +154,7 @@ final GoRouter appRouter = GoRouter(
         GoRoute(
           path: '/admin/dashboard',
           name: 'admin-dashboard',
-          builder: (context, state) => const AdminDashboardScreen(),
+          builder: (context, state) => const AdminAnalyticsScreen(),
         ),
         GoRoute(
           path: '/admin/verify',
@@ -179,3 +200,4 @@ final GoRouter appRouter = GoRouter(
     ),
   ],
 );
+});

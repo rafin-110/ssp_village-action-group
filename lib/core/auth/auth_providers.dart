@@ -36,16 +36,17 @@ const _mockAdmin = AppUser(
 
 /// The currently authenticated user.
 /// Set at login; cleared on logout. Mutable only by auth/logout actions.
-final currentUserProvider = StateProvider<AppUser>((ref) => _mockLeader);
+final currentUserProvider = StateProvider<AppUser?>((ref) => null);
 
 /// Convenience provider: current user's role.
-final userRoleProvider = Provider<UserRole>((ref) {
-  return ref.watch(currentUserProvider).role;
+final userRoleProvider = Provider<UserRole?>((ref) {
+  return ref.watch(currentUserProvider)?.role;
 });
 
 /// Convenience provider: is the current user an admin/supervisor?
 final isAdminProvider = Provider<bool>((ref) {
-  return ref.watch(userRoleProvider) == UserRole.admin;
+  final role = ref.watch(userRoleProvider);
+  return role == UserRole.admin;
 });
 
 /// Returns the mock admin user (dev only).

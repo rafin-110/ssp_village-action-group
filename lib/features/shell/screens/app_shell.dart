@@ -84,7 +84,7 @@ class AppShell extends ConsumerWidget {
   // Helpers
   // ---------------------------------------------------------------------------
 
-  List<_NavDestination> _getDestinations(UserRole role) {
+  List<_NavDestination> _getDestinations(UserRole? role) {
     return role == UserRole.admin ? _adminDestinations : _leaderDestinations;
   }
 

@@ -5,6 +5,8 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/user_role.dart';
+import '../../../core/auth/supabase_auth_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // ---------------------------------------------------------------------------
 // PHASE 03 — Authentication Foundation
@@ -69,41 +71,38 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       _errorMessage = null;
     });
 
-    // Simulate network delay (will be replaced with real Supabase call in Phase 16)
-    await Future.delayed(const Duration(milliseconds: 600));
-
-    final username = _usernameController.text.trim().toLowerCase();
+    final username = _usernameController.text.trim();
     final password = _passwordController.text;
 
-    // Mock credential check — replaced by Supabase Auth in Phase 16
-    AppUser? authenticatedUser;
-    if (username == 'admin' && password == 'admin123') {
-      authenticatedUser = mockAdminUser;
-    } else if (password.isNotEmpty && username.isNotEmpty) {
-      // Any non-empty credentials = leader login for now
-      authenticatedUser = mockLeaderUser;
-    }
+    try {
+      final authenticatedUser = await SupabaseAuthService.instance.signIn(
+        username: username,
+        password: password,
+      );
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    if (authenticatedUser == null) {
+      // Set the authenticated user in state
+      ref.read(currentUserProvider.notifier).state = authenticatedUser;
+
+      setState(() => _isLoading = false);
+
+      // Navigate to the correct shell based on role
+      if (authenticatedUser.role == UserRole.admin) {
+        context.go('/admin/dashboard');
+      } else {
+        context.go('/leader/submit');
+      }
+    } catch (e) {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Invalid username or password.\nContact your NGO coordinator if you need access.';
+        if (e is AuthException) {
+          _errorMessage = e.message;
+        } else {
+          _errorMessage = 'Invalid username or password.\nContact your NGO coordinator if you need access.';
+        }
       });
-      return;
-    }
-
-    // Set the authenticated user in state
-    ref.read(currentUserProvider.notifier).state = authenticatedUser;
-
-    setState(() => _isLoading = false);
-
-    // Navigate to the correct shell based on role
-    if (authenticatedUser.role == UserRole.admin) {
-      context.go('/admin/dashboard');
-    } else {
-      context.go('/leader/submit');
     }
   }
 

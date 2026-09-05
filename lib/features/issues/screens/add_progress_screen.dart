@@ -92,7 +92,7 @@ class _AddProgressScreenState extends ConsumerState<AddProgressScreen> {
     setState(() => _isSaving = true);
 
     try {
-      final user = ref.read(currentUserProvider);
+      final user = ref.read(currentUserProvider)!;
       final update = ProgressUpdate.create(
         id: generateUuid(),
         issueId: issue.id,

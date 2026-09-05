@@ -36,6 +36,7 @@ class AppUser {
   final String? villageName;
   final String? district;
   final String? state;
+  final bool active;
 
   const AppUser({
     required this.id,
@@ -47,6 +48,7 @@ class AppUser {
     this.villageName,
     this.district,
     this.state,
+    this.active = true,
   });
 
   /// Human-readable role label for display.
@@ -76,6 +78,7 @@ class AppUser {
     String? villageName,
     String? district,
     String? state,
+    bool? active,
   }) {
     return AppUser(
       id: id ?? this.id,
@@ -87,6 +90,7 @@ class AppUser {
       villageName: villageName ?? this.villageName,
       district: district ?? this.district,
       state: state ?? this.state,
+      active: active ?? this.active,
     );
   }
 }

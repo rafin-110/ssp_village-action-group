@@ -65,7 +65,7 @@ class _ReportIssueScreenState extends ConsumerState<ReportIssueScreen> {
     setState(() => _isSaving = true);
 
     try {
-      final user = ref.read(currentUserProvider);
+      final user = ref.read(currentUserProvider)!;
       final issue = Issue.create(
         id: generateUuid(),
         leaderId: user.id,

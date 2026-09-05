@@ -6,6 +6,7 @@ import 'package:vag_dmp_frontend/core/theme/app_colors.dart';
 import 'package:vag_dmp_frontend/core/constants/app_constants.dart';
 import 'package:vag_dmp_frontend/core/auth/auth_providers.dart';
 import 'package:vag_dmp_frontend/core/auth/user_role.dart';
+import 'package:vag_dmp_frontend/core/auth/supabase_auth_service.dart';
 
 /// Profile screen showing user information, app settings, and RBAC toggle.
 ///
@@ -17,6 +18,8 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(currentUserProvider);
+    if (user == null) return const SizedBox.shrink();
+
     final isAdmin = ref.watch(isAdminProvider);
 
     return Scaffold(
@@ -337,10 +340,11 @@ class ProfileScreen extends ConsumerWidget {
                   child: const Text('Cancel'),
                 ),
                 FilledButton(
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.of(ctx).pop();
-                    // Reset to default leader user
-                    ref.read(currentUserProvider.notifier).state = mockLeaderUser;
+                    await SupabaseAuthService.instance.signOut();
+                    ref.read(currentUserProvider.notifier).state = null;
+                    if (!context.mounted) return;
                     context.go('/login');
                   },
                   style: FilledButton.styleFrom(
