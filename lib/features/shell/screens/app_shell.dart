@@ -61,16 +61,10 @@ class AppShell extends ConsumerWidget {
       route: '/admin/dashboard',
     ),
     _NavDestination(
-      label: 'Issues',
-      icon: Icons.list_alt_outlined,
-      selectedIcon: Icons.list_alt_rounded,
-      route: '/admin/issues',
-    ),
-    _NavDestination(
       label: 'Verify',
       icon: Icons.fact_check_outlined,
       selectedIcon: Icons.fact_check_rounded,
-      route: '/admin/verify',
+      route: '/admin/issues',
     ),
     _NavDestination(
       label: 'Notifications',

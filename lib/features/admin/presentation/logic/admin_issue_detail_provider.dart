@@ -54,7 +54,7 @@ class AdminIssueDetailNotifier extends StateNotifier<AdminIssueDetailState> {
       // 1. Fetch Issue Data
       final issueResponse = await client
           .from('issues')
-          .select('*, profiles(full_name), villages(name), issue_categories(name)')
+          .select('*, leader:profiles!issues_leader_id_fkey(full_name), villages(name), issue_categories(name)')
           .eq('id', issueId)
           .maybeSingle();
 
