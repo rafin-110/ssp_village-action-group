@@ -1,15 +1,21 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // ---------------------------------------------------------------------------
 // PHASE 25 — Admin Notifications Provider
 // Shows two real event types:
-//   1. New Issue Created  — read from the `issues` table (leader creates issue)
-//   2. Issue Closed       — read from the `closure_notifications` table (leader closes)
+//   1. New Issue Created  — read from the `issues` table
+//   2. Issue Closed       — read from the `closure_notifications` table
 //
 // Read/unread for new-issue events is tracked locally in memory (Set of seen IDs)
-// because the `issues` table has no is_read column.
 // Read/unread for closure events is persisted in `closure_notifications.is_read`.
+//
+// Realtime subscriptions keep the list live while the screen is open.
+// Both `issues` and `closure_notifications` must be in the supabase_realtime
+// publication for events to arrive:
+//   ALTER PUBLICATION supabase_realtime ADD TABLE public.issues;
+//   ALTER PUBLICATION supabase_realtime ADD TABLE public.closure_notifications;
 // ---------------------------------------------------------------------------
 
 // Unified notification model used by the UI.
@@ -66,9 +72,82 @@ class AdminNotificationsNotifier extends StateNotifier<AdminNotificationsState> 
   // Tracks IDs of new-issue notifications the admin has tapped (local only).
   final Set<String> _locallyReadNewIssueIds = {};
 
+  // Realtime channels — kept alive for the session.
+  RealtimeChannel? _issuesChannel;
+  RealtimeChannel? _closureChannel;
+
   AdminNotificationsNotifier() : super(AdminNotificationsState()) {
     fetchNotifications();
+    _subscribeToRealtime();
   }
+
+  // ── Realtime ──────────────────────────────────────────────────────────────
+
+  void _subscribeToRealtime() {
+    final client = Supabase.instance.client;
+
+    // ── Channel 1: issues INSERT → "New issue reported" ──────────────────
+    _issuesChannel = client
+        .channel('notif_issues_realtime')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'issues',
+          callback: (payload) {
+            debugPrint('[NotifRealtime] issues INSERT received — refreshing');
+            fetchNotifications();
+          },
+        );
+
+    _issuesChannel!.subscribe((RealtimeSubscribeStatus status, [Object? error]) {
+      debugPrint('[NotifRealtime] issues channel status: $status | error: $error');
+      if (status == RealtimeSubscribeStatus.channelError ||
+          status == RealtimeSubscribeStatus.timedOut) {
+        debugPrint('[NotifRealtime] ❌ issues channel FAILED: $error');
+      } else if (status == RealtimeSubscribeStatus.subscribed) {
+        debugPrint('[NotifRealtime] ✅ issues channel SUBSCRIBED');
+      }
+    });
+
+    // ── Channel 2: closure_notifications INSERT → "Issue closed" ─────────
+    _closureChannel = client
+        .channel('notif_closure_realtime')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'closure_notifications',
+          callback: (payload) {
+            debugPrint('[NotifRealtime] closure_notifications INSERT received — refreshing');
+            fetchNotifications();
+          },
+        );
+
+    _closureChannel!.subscribe((RealtimeSubscribeStatus status, [Object? error]) {
+      debugPrint('[NotifRealtime] closure channel status: $status | error: $error');
+      if (status == RealtimeSubscribeStatus.channelError ||
+          status == RealtimeSubscribeStatus.timedOut) {
+        debugPrint('[NotifRealtime] ❌ closure channel FAILED: $error');
+      } else if (status == RealtimeSubscribeStatus.subscribed) {
+        debugPrint('[NotifRealtime] ✅ closure channel SUBSCRIBED');
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    final client = Supabase.instance.client;
+    if (_issuesChannel != null) {
+      client.removeChannel(_issuesChannel!);
+      _issuesChannel = null;
+    }
+    if (_closureChannel != null) {
+      client.removeChannel(_closureChannel!);
+      _closureChannel = null;
+    }
+    super.dispose();
+  }
+
+  // ── Data fetching ─────────────────────────────────────────────────────────
 
   Future<void> fetchNotifications() async {
     state = state.copyWith(isLoading: true, error: null);
@@ -78,8 +157,6 @@ class AdminNotificationsNotifier extends StateNotifier<AdminNotificationsState> 
       final List<AdminNotif> merged = [];
 
       // ── 1. New issues (leader created) ─────────────────────────────────────
-      // We simply read the `issues` table newest-first and treat each row as
-      // a "New issue reported" notification. No schema change needed.
       try {
         final issuesResp = await client
             .from('issues')
@@ -108,7 +185,7 @@ class AdminNotificationsNotifier extends StateNotifier<AdminNotificationsState> 
         // If this query fails, skip new-issue notifications gracefully.
       }
 
-      // ── 2. Closure notifications (leader closed an issue) ──────────────────
+      // ── 2. Closure notifications ────────────────────────────────────────────
       try {
         final closureResp = await client
             .from('closure_notifications')
@@ -123,7 +200,7 @@ class AdminNotificationsNotifier extends StateNotifier<AdminNotificationsState> 
           final closerName = (row['closer'] as Map<String, dynamic>?)?['full_name'] as String? ?? 'A leader';
           final createdAt = DateTime.parse(row['created_at'] as String);
           final isRead = row['is_read'] as bool? ?? false;
-          // issue_id links back to the actual issue for tap-to-navigate.
+          // issue_id FK links back to the actual issue for tap-to-navigate.
           final issueId = row['issue_id'] as String? ?? '';
 
           merged.add(AdminNotif(
@@ -154,6 +231,8 @@ class AdminNotificationsNotifier extends StateNotifier<AdminNotificationsState> 
       state = state.copyWith(isLoading: false, error: 'Failed to load notifications: $e');
     }
   }
+
+  // ── Read state ────────────────────────────────────────────────────────────
 
   /// Mark a single notification as read.
   /// For closure events: persists to Supabase.

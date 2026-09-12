@@ -126,6 +126,9 @@ class AdminLeadersScreen extends ConsumerWidget {
   }
 
   void _showCreateUserDialog(BuildContext context, WidgetRef ref, AdminLeadersNotifier notifier) {
+    // Clear any stale error from a previous attempt.
+    notifier.clearError();
+
     final formKey = GlobalKey<FormState>();
     String username = '';
     String password = '';
@@ -141,58 +144,84 @@ class AdminLeadersScreen extends ConsumerWidget {
           content: Consumer(
             builder: (context, ref, _) {
               final optionsAsync = ref.watch(adminFilterOptionsProvider);
+              // Watch leaders state to surface errors and loading inside the dialog.
+              final leadersState = ref.watch(adminLeadersProvider);
+
               return optionsAsync.when(
                 loading: () => const SizedBox(height: 100, child: Center(child: CircularProgressIndicator())),
                 error: (e, _) => Text('Error loading villages: $e'),
                 data: (options) {
                   return SingleChildScrollView(
-                    child: Form(
-                      key: formKey,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextFormField(
-                            decoration: const InputDecoration(labelText: 'Username (e.g. VAG020)'),
-                            validator: (v) => v!.isEmpty ? 'Required' : null,
-                            onSaved: (v) => username = v!,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // ── Inline error banner ──────────────────────────
+                        if (leadersState.error != null)
+                          Container(
+                            width: double.infinity,
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade50,
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: Colors.red.shade200),
+                            ),
+                            child: Text(
+                              leadersState.error!,
+                              style: const TextStyle(color: Colors.red, fontSize: 13),
+                            ),
                           ),
-                          TextFormField(
-                            decoration: const InputDecoration(labelText: 'Full Name'),
-                            validator: (v) => v!.isEmpty ? 'Required' : null,
-                            onSaved: (v) => fullName = v!,
-                          ),
-                          TextFormField(
-                            decoration: const InputDecoration(labelText: 'Password'),
-                            obscureText: true,
-                            validator: (v) => v!.length < 6 ? 'Min 6 chars' : null,
-                            onSaved: (v) => password = v!,
-                          ),
-                          const SizedBox(height: 16),
-                          DropdownButtonFormField<String>(
-                            value: role,
-                            decoration: const InputDecoration(labelText: 'Role'),
-                            items: const [
-                              DropdownMenuItem(value: 'leader', child: Text('Leader')),
-                              DropdownMenuItem(value: 'supervisor', child: Text('Supervisor')),
-                              DropdownMenuItem(value: 'admin', child: Text('Admin')),
+                        // ── Form fields ──────────────────────────────────
+                        Form(
+                          key: formKey,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextFormField(
+                                decoration: const InputDecoration(labelText: 'Username (e.g. VAG020)'),
+                                validator: (v) => v!.isEmpty ? 'Required' : null,
+                                onSaved: (v) => username = v!,
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(labelText: 'Full Name'),
+                                validator: (v) => v!.isEmpty ? 'Required' : null,
+                                onSaved: (v) => fullName = v!,
+                              ),
+                              TextFormField(
+                                decoration: const InputDecoration(labelText: 'Password'),
+                                obscureText: true,
+                                validator: (v) => v!.length < 6 ? 'Min 6 chars' : null,
+                                onSaved: (v) => password = v!,
+                              ),
+                              const SizedBox(height: 16),
+                              DropdownButtonFormField<String>(
+                                value: role,
+                                decoration: const InputDecoration(labelText: 'Role'),
+                                items: const [
+                                  DropdownMenuItem(value: 'leader', child: Text('Leader')),
+                                  DropdownMenuItem(value: 'supervisor', child: Text('Supervisor')),
+                                  DropdownMenuItem(value: 'admin', child: Text('Admin')),
+                                ],
+                                onChanged: (v) => role = v!,
+                              ),
+                              const SizedBox(height: 16),
+                              DropdownButtonFormField<String>(
+                                value: villageId,
+                                decoration: const InputDecoration(labelText: 'Assigned Village'),
+                                validator: (v) => v == null ? 'Please select a village' : null,
+                                items: options.villages.map((v) {
+                                  return DropdownMenuItem(
+                                    value: v['id'] as String,
+                                    child: Text(v['name'] as String),
+                                  );
+                                }).toList(),
+                                onChanged: (v) => villageId = v,
+                              ),
                             ],
-                            onChanged: (v) => role = v!,
                           ),
-                          const SizedBox(height: 16),
-                          DropdownButtonFormField<String>(
-                            value: villageId,
-                            decoration: const InputDecoration(labelText: 'Assigned Village'),
-                            validator: (v) => v == null ? 'Please select a village' : null,
-                            items: options.villages.map((v) {
-                              return DropdownMenuItem(
-                                value: v['id'] as String,
-                                child: Text(v['name'] as String),
-                              );
-                            }).toList(),
-                            onChanged: (v) => villageId = v,
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
                 },
@@ -200,24 +229,43 @@ class AdminLeadersScreen extends ConsumerWidget {
             },
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-            ElevatedButton(
-              onPressed: () async {
-                if (formKey.currentState!.validate()) {
-                  formKey.currentState!.save();
-                  final success = await notifier.createUser(
-                    username: username,
-                    password: password,
-                    fullName: fullName,
-                    role: role,
-                    villageId: villageId!,
-                  );
-                  if (success && ctx.mounted) {
-                    Navigator.pop(ctx);
-                  }
-                }
+            TextButton(
+              onPressed: () {
+                notifier.clearError();
+                Navigator.pop(ctx);
               },
-              child: const Text('Create'),
+              child: const Text('Cancel'),
+            ),
+            Consumer(
+              builder: (context, ref, _) {
+                final isLoading = ref.watch(adminLeadersProvider).isLoading;
+                return ElevatedButton(
+                  onPressed: isLoading
+                      ? null
+                      : () async {
+                          if (formKey.currentState!.validate()) {
+                            formKey.currentState!.save();
+                            final success = await notifier.createUser(
+                              username: username,
+                              password: password,
+                              fullName: fullName,
+                              role: role,
+                              villageId: villageId!,
+                            );
+                            if (success && ctx.mounted) {
+                              Navigator.pop(ctx);
+                            }
+                            // If !success, the error appears in the banner above.
+                          }
+                        },
+                  child: isLoading
+                      ? const SizedBox(
+                          width: 18, height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                      : const Text('Create'),
+                );
+              },
             ),
           ],
         );

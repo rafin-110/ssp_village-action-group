@@ -177,13 +177,22 @@ class AdminNotificationsScreen extends ConsumerWidget {
                           )
                         : null,
                     onTap: () async {
-                      // Mark as read first (preserves existing read behavior).
+                      // Capture router and issueId BEFORE any await.
+                      // After markAsRead() updates state, the list rebuilds
+                      // and this item's BuildContext gets unmounted, making
+                      // context.mounted false. The router instance is safe
+                      // to use after the await because it is app-level.
+                      final router = GoRouter.of(context);
+                      final targetIssueId = notif.issueId;
+
+                      // Mark as read (preserves existing read behavior).
                       if (isUnread) {
                         await notifier.markAsRead(notif.id);
                       }
-                      // Navigate to the exact issue detail screen.
-                      if (notif.issueId.isNotEmpty && context.mounted) {
-                        context.go('/admin/issues/${notif.issueId}');
+
+                      // Navigate to the exact existing issue detail screen.
+                      if (targetIssueId.isNotEmpty) {
+                        router.go('/admin/issues/$targetIssueId');
                       }
                     },
                   ),

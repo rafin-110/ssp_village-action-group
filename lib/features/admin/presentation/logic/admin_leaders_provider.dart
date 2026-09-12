@@ -77,6 +77,11 @@ class AdminLeadersNotifier extends StateNotifier<AdminLeadersState> {
     }
   }
 
+  /// Clears the error state (call when opening a fresh dialog).
+  void clearError() {
+    state = state.copyWith(error: null);
+  }
+
   /// Change role and village of a user
   Future<void> updateUser(String profileId, String newRole, String? newVillageId) async {
     try {
