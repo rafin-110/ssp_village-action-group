@@ -202,7 +202,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         GoRoute(
           path: '/admin/villages',
           name: 'admin-villages',
-          builder: (context, state) => state.matchedLocation.startsWith('/admin') ? const AdminVillagesScreen() : const VillageListScreen(),
+          builder: (context, state) => const AdminVillagesScreen(),
           routes: [
             GoRoute(
               path: ':villageId',

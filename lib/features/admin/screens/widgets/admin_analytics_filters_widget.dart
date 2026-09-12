@@ -36,15 +36,16 @@ class AdminAnalyticsFiltersWidget extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // ── Date Presets ──
-              Row(
+              Wrap(
+                spacing: AppConstants.spacingMd,
+                runSpacing: AppConstants.spacingMd,
+                crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
                   const Text('Time Range:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(width: AppConstants.spacingMd),
                   _DatePresetButton(label: 'All Time', onPressed: () => notifier.setPresetDateRange('all')),
                   _DatePresetButton(label: 'Last 7 Days', onPressed: () => notifier.setPresetDateRange('week')),
                   _DatePresetButton(label: 'Last 30 Days', onPressed: () => notifier.setPresetDateRange('month')),
                   _DatePresetButton(label: 'Last Year', onPressed: () => notifier.setPresetDateRange('year')),
-                  const SizedBox(width: AppConstants.spacingMd),
                   OutlinedButton.icon(
                     icon: const Icon(Icons.date_range, size: 18),
                     label: Text(_dateRangeText(state.startDate, state.endDate)),
