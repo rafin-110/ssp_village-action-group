@@ -152,6 +152,8 @@ class AdminAnalyticsNotifier extends StateNotifier<AdminAnalyticsState> {
   }
 
   Future<void> fetchAnalytics() async {
+    // ignore: avoid_print
+    print('[ANALYTICS] fetchAnalytics() called — current total=${state.totalIssues}');
     state = state.copyWith(isLoading: true, clearError: true);
     
     try {
@@ -212,6 +214,8 @@ class AdminAnalyticsNotifier extends StateNotifier<AdminAnalyticsState> {
         byVil[vilName] = (byVil[vilName] ?? 0) + 1;
       }
 
+      // ignore: avoid_print
+      print('[ANALYTICS] fetchAnalytics() complete — new total=$total');
       state = state.copyWith(
         totalIssues: total,
         reportedCount: rep,
@@ -224,6 +228,8 @@ class AdminAnalyticsNotifier extends StateNotifier<AdminAnalyticsState> {
       );
       
     } catch (e) {
+      // ignore: avoid_print
+      print('[ANALYTICS] fetchAnalytics() ERROR: $e');
       state = state.copyWith(isLoading: false, error: 'Failed to load analytics: $e');
     }
   }

@@ -9,6 +9,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../presentation/logic/admin_issues_provider.dart';
+import '../presentation/logic/issues_realtime_provider.dart';
 import 'widgets/admin_filters_widget.dart';
 
 /// PHASE 21 — Admin Issue List Screen
@@ -31,6 +32,8 @@ class _AdminIssueListScreenState extends ConsumerState<AdminIssueListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Activates the shared realtime channel — keeps Issue List live.
+    ref.watch(issuesRealtimeProvider);
     final state = ref.watch(adminIssuesProvider);
     final notifier = ref.read(adminIssuesProvider.notifier);
 

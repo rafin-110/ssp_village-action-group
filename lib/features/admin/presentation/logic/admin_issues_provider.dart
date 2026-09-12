@@ -165,6 +165,8 @@ class AdminIssuesNotifier extends StateNotifier<AdminIssuesState> {
   }
 
   Future<void> fetchIssues() async {
+    // ignore: avoid_print
+    print('[ISSUES] fetchIssues() called — current count=${state.issues.length}');
     state = state.copyWith(isLoading: true, clearError: true);
     
     try {
@@ -220,12 +222,16 @@ class AdminIssuesNotifier extends StateNotifier<AdminIssuesState> {
           .map((json) => AdminIssueModel.fromJson(json as Map<String, dynamic>))
           .toList();
 
+      // ignore: avoid_print
+      print('[ISSUES] fetchIssues() complete — new count=$count loaded=${issues.length}');
       state = state.copyWith(
         issues: issues,
         totalCount: count,
         isLoading: false,
       );
     } catch (e) {
+      // ignore: avoid_print
+      print('[ISSUES] fetchIssues() ERROR: $e');
       state = state.copyWith(
         isLoading: false,
         error: 'Failed to fetch issues: $e',

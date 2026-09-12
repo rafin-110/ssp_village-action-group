@@ -7,6 +7,7 @@ import '../../../../core/constants/app_constants.dart';
 import '../presentation/logic/admin_analytics_provider.dart';
 import '../presentation/logic/admin_issues_provider.dart';
 import '../presentation/logic/admin_filter_options_provider.dart';
+import '../presentation/logic/issues_realtime_provider.dart';
 import 'widgets/admin_analytics_filters_widget.dart';
 
 /// PHASE 24 — Admin Analytics Screen
@@ -16,6 +17,8 @@ class AdminAnalyticsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Activates the shared realtime channel — keeps Dashboard live.
+    ref.watch(issuesRealtimeProvider);
     final state = ref.watch(adminAnalyticsProvider);
 
     void navigateToIssues({
