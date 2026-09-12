@@ -74,5 +74,18 @@
   "cancel": "रद्द करें",
   "delete": "हटाएं",
   "edit": "संपादित करें",
-  "viewAll": "सभी देखें"
+  "viewAll": "सभी देखें",
+  
+  "settings": "सेटिंग्स",
+  "account": "खाता",
+  "system": "सिस्टम",
+  "security": "सुरक्षा",
+  "about": "के बारे में",
+  "language": "भाषा",
+  "signOut": "साइन आउट",
+  "editProfile": "प्रोफ़ाइल संपादित करें",
+  "changePassword": "पासवर्ड बदलें",
+  "appVersion": "ऐप संस्करण",
+  "privacyPolicy": "गोपनीयता नीति",
+  "termsOfService": "सेवा की शर्तें"
 }

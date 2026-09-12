@@ -198,4 +198,40 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewAll => 'View All';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get system => 'System';
+
+  @override
+  String get security => 'Security';
+
+  @override
+  String get about => 'About';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get signOut => 'Sign Out';
+
+  @override
+  String get editProfile => 'Edit Profile';
+
+  @override
+  String get changePassword => 'Change Password';
+
+  @override
+  String get appVersion => 'App Version';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get termsOfService => 'Terms of Service';
 }

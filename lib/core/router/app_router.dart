@@ -23,6 +23,7 @@ import '../../features/admin/screens/admin_villages_screen.dart';
 import '../../features/admin/screens/verification_center_screen.dart';
 import '../../features/admin/screens/admin_review_screen.dart';
 import '../../features/admin/screens/admin_notifications_screen.dart';
+import '../../features/admin/screens/admin_settings_screen.dart';
 
 
 
@@ -178,6 +179,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/admin/leaders',
           name: 'admin-leaders',
           builder: (context, state) => const AdminLeadersScreen(),
+        ),
+        GoRoute(
+          path: '/admin/settings',
+          name: 'admin-settings',
+          builder: (context, state) => const AdminSettingsScreen(),
         ),
         GoRoute(
           path: '/admin/verify',

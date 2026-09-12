@@ -84,6 +84,12 @@ class AppShell extends ConsumerWidget {
       selectedIcon: Icons.people_rounded,
       route: '/admin/leaders',
     ),
+    _NavDestination(
+      label: 'Settings',
+      icon: Icons.settings_outlined,
+      selectedIcon: Icons.settings_rounded,
+      route: '/admin/settings',
+    ),
   ];
 
   // ---------------------------------------------------------------------------

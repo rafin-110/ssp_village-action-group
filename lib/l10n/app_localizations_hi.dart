@@ -198,4 +198,40 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get viewAll => 'सभी देखें';
+
+  @override
+  String get settings => 'सेटिंग्स';
+
+  @override
+  String get account => 'खाता';
+
+  @override
+  String get system => 'सिस्टम';
+
+  @override
+  String get security => 'सुरक्षा';
+
+  @override
+  String get about => 'के बारे में';
+
+  @override
+  String get language => 'भाषा';
+
+  @override
+  String get signOut => 'साइन आउट';
+
+  @override
+  String get editProfile => 'प्रोफ़ाइल संपादित करें';
+
+  @override
+  String get changePassword => 'पासवर्ड बदलें';
+
+  @override
+  String get appVersion => 'ऐप संस्करण';
+
+  @override
+  String get privacyPolicy => 'गोपनीयता नीति';
+
+  @override
+  String get termsOfService => 'सेवा की शर्तें';
 }

@@ -80,5 +80,18 @@
   "cancel": "Cancel",
   "delete": "Delete",
   "edit": "Edit",
-  "viewAll": "View All"
+  "viewAll": "View All",
+  
+  "settings": "Settings",
+  "account": "Account",
+  "system": "System",
+  "security": "Security",
+  "about": "About",
+  "language": "Language",
+  "signOut": "Sign Out",
+  "editProfile": "Edit Profile",
+  "changePassword": "Change Password",
+  "appVersion": "App Version",
+  "privacyPolicy": "Privacy Policy",
+  "termsOfService": "Terms of Service"
 }

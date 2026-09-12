@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:vag_dmp_frontend/l10n/app_localizations.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'core/localization/locale_provider.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,6 +15,7 @@ class VagDmpApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final currentLocale = ref.watch(localeProvider);
 
     return MaterialApp.router(
       title: 'VAG-DMP',
@@ -30,7 +32,7 @@ class VagDmpApp extends ConsumerWidget {
       // Localization
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      locale: const Locale('en'),
+      locale: currentLocale,
     );
   }
 }
