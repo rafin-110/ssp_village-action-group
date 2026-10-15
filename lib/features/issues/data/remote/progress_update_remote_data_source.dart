@@ -41,6 +41,13 @@ class ProgressUpdateRemoteDataSource {
     );
   }
 
+  /// Pushes a batch of [models] to the Supabase `progress_updates` table.
+  Future<void> upsertProgressUpdatesBatch(List<ProgressUpdateModel> models) async {
+    if (models.isEmpty) return;
+    final payloads = models.map((m) => _toSupabasePayload(m)).toList();
+    await _client.upsertBatch(SupabaseConfig.progressUpdatesTable, payloads);
+  }
+
   // ── Mapping ───────────────────────────────────────────────────────────────
 
   static Map<String, dynamic> _toSupabasePayload(ProgressUpdateModel model) {

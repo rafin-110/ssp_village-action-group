@@ -131,6 +131,23 @@ class ProgressUpdatesSyncStrategy implements SyncStrategy {
     );
   }
 
+  @override
+  Future<void> uploadBatch(List<String> ids) async {
+    if (ids.isEmpty) return;
+
+    final models = <ProgressUpdateModel>[];
+    for (final id in ids) {
+      final model = await _localDs.getUpdateById(id);
+      if (model != null) {
+        models.add(model);
+      }
+    }
+    
+    if (models.isEmpty) return;
+    debugPrint('ProgressUpdatesSyncStrategy: Batch uploading ${models.length} updates...');
+    await _remoteDs.upsertProgressUpdatesBatch(models);
+  }
+
   // ── Status updates ────────────────────────────────────────────────────────
 
   @override

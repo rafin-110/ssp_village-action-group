@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:http/http.dart' show ClientException;
 import '../network/supabase_config.dart';
 import 'cached_user_store.dart';
 import 'user_role.dart';
@@ -84,6 +85,10 @@ class SupabaseAuthService {
         '[Auth] signInWithPassword FAILED — AuthException: '
         'message="${e.message}" statusCode=${e.statusCode}',
       );
+      rethrow;
+    } on ClientException catch (e) {
+      // Thrown by dart:http on web when there is no network connectivity.
+      debugPrint('[Auth] signInWithPassword FAILED — ClientException (no network): $e');
       rethrow;
     } catch (e) {
       debugPrint('[Auth] signInWithPassword FAILED — unexpected error: $e');

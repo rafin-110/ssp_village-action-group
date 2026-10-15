@@ -103,6 +103,34 @@ class IssuesSyncStrategy implements SyncStrategy {
     }
   }
 
+  @override
+  Future<void> uploadBatch(List<String> ids) async {
+    if (ids.isEmpty) return;
+
+    final models = <IssueModel>[];
+    for (final id in ids) {
+      final model = await _localDs.getIssueById(id);
+      if (model != null) {
+        models.add(model);
+      }
+    }
+    
+    if (models.isEmpty) return;
+    debugPrint('IssuesSyncStrategy: Batch uploading ${models.length} issues...');
+    await _remoteDs.upsertIssuesBatch(models);
+    
+    for (final model in models) {
+      if (model.locked) {
+        try {
+          await _closureDs.createIfClosed(model);
+        } catch (e) {
+          debugPrint('IssuesSyncStrategy: ⚠ Closure notification failed for "${model.id}": $e');
+          // Don't rethrow here because the batch upsert already succeeded for the issue
+        }
+      }
+    }
+  }
+
   // ── Status updates ────────────────────────────────────────────────────────
 
   @override

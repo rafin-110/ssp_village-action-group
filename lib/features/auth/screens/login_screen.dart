@@ -7,6 +7,7 @@ import '../../../core/auth/auth_providers.dart';
 import '../../../core/auth/user_role.dart';
 import '../../../core/auth/supabase_auth_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:http/http.dart' show ClientException;
 
 // ---------------------------------------------------------------------------
 // PHASE 03 — Authentication Foundation
@@ -100,8 +101,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         final errorStr = e.toString();
         if (e is AuthException) {
           _errorMessage = e.message;
-        } else if (errorStr.contains('SocketException') ||
-            errorStr.contains('Failed host lookup')) {
+        } else if (e is ClientException ||
+            errorStr.contains('SocketException') ||
+            errorStr.contains('Failed host lookup') ||
+            errorStr.contains('NetworkException') ||
+            errorStr.contains('ClientException')) {
+          // ClientException is thrown by dart:http on web for network failures;
+          // SocketException is thrown on native (Android/iOS/desktop).
           _errorMessage =
               'You are currently offline. Please connect to the internet to log in.';
         } else {

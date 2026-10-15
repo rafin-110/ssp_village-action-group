@@ -65,17 +65,33 @@ class SyncManager {
 
         for (final strategy in _strategies) {
           final pendingIds = await strategy.getPendingIds();
-          for (final id in pendingIds) {
-            debugPrint('SyncManager: [${strategy.name}] Syncing item $id...');
-            await strategy.markSyncing(id);
+          
+          if (pendingIds.isNotEmpty) {
+            debugPrint('SyncManager: [${strategy.name}] Batch syncing ${pendingIds.length} items...');
+            for (final id in pendingIds) {
+              await strategy.markSyncing(id);
+            }
+            
             try {
-              await strategy.uploadItem(id);
-              await strategy.markSynced(id);
-              _syncCompletedController.add(null);
+              // Batch upload
+              await strategy.uploadBatch(pendingIds);
+              
+              for (final id in pendingIds) {
+                await strategy.markSynced(id);
+                _syncCompletedController.add(null);
+              }
             } catch (e) {
-              debugPrint('SyncManager: [${strategy.name}] Failed item $id: $e');
-              await strategy.markFailed(id);
-              _syncCompletedController.add(null);
+              debugPrint('SyncManager: [${strategy.name}] Batch failed: $e');
+              for (final id in pendingIds) {
+                await strategy.markFailed(id);
+                _syncCompletedController.add(null);
+              }
+              // Exponential backoff / circuit breaker logic:
+              // If the server fails, stop the queue and wait 5 seconds before allowing next sync.
+              debugPrint('SyncManager: Circuit breaker triggered. Waiting 5 seconds before next sync allowed...');
+              await Future.delayed(const Duration(seconds: 5));
+              // Break out of strategy loop to allow the app to recover
+              break; 
             }
           }
         }

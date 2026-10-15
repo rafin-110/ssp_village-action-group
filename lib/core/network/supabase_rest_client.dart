@@ -101,6 +101,35 @@ class SupabaseRestClient {
     return {};
   }
 
+  /// Upserts a batch of rows into [table].
+  ///
+  /// Uses Supabase's `Prefer: resolution=merge-duplicates` to handle conflicts
+  /// gracefully.
+  /// 
+  /// Returns a list of upserted rows. Throws [DioException] on failure.
+  Future<List<Map<String, dynamic>>> upsertBatch(
+    String table,
+    List<Map<String, dynamic>> dataList,
+  ) async {
+    _assertInitialized();
+    if (dataList.isEmpty) return [];
+
+    final response = await _dio.post(
+      '/$table',
+      data: dataList,
+      options: Options(
+        headers: {
+          'Prefer': 'resolution=merge-duplicates,return=representation',
+        },
+      ),
+    );
+    final body = response.data;
+    if (body is List) {
+      return body.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+    }
+    return [];
+  }
+
   /// Inserts a row into [table], silently ignoring conflict (duplicate key).
   ///
   /// Uses Supabase's `Prefer: resolution=ignore-duplicates` which maps to

@@ -1,0 +1,2 @@
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/libisar.dylib
+${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/isar_flutter_libs.framework

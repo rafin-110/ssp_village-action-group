@@ -36,6 +36,13 @@ class IssueRemoteDataSource {
     await _client.upsert(SupabaseConfig.issuesTable, _toSupabasePayload(model));
   }
 
+  /// Pushes a batch of [models] to the Supabase `issues` table using upsert.
+  Future<void> upsertIssuesBatch(List<IssueModel> models) async {
+    if (models.isEmpty) return;
+    final payloads = models.map((m) => _toSupabasePayload(m)).toList();
+    await _client.upsertBatch(SupabaseConfig.issuesTable, payloads);
+  }
+
   // ── Mapping: IssueModel → Supabase column names ───────────────────────────
 
   /// Maps IssueModel fields to the exact column names in the Supabase

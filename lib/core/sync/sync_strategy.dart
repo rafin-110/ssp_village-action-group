@@ -9,6 +9,9 @@ abstract class SyncStrategy {
   /// Attempts to upload a specific item to Supabase by its ID.
   Future<void> uploadItem(String id);
 
+  /// Attempts to upload a batch of items to Supabase by their IDs.
+  Future<void> uploadBatch(List<String> ids);
+
   /// Marks an item as actively syncing.
   Future<void> markSyncing(String id);
 
